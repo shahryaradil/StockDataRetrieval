@@ -15,7 +15,6 @@ def get_stock_data():
     start_date = datetime.datetime(date.year, date.month, date.day)
     end_date = datetime.datetime.now().date()
 
-    api_key = 'xx'
     ts = TimeSeries(key=api_key, output_format="pandas")
     data_daily, meta_data = ts.get_daily_adjusted(symbol=ticker, outputsize='full')
 
