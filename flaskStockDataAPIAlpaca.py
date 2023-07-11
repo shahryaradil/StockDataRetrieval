@@ -16,8 +16,8 @@ def get_stock_data():
     start_date = datetime(date.year, date.month, date.day)
     end_date = datetime.now().date()
 
-    api_key = ''
-    api_secret = ''
+    api_key = 'PK5MB4U81W6P2FIM31SF'
+    api_secret = 's18JLiddN2xh3xzFte87npbqCraNtPgwJlKV8Iwv'
 
     client = StockHistoricalDataClient(api_key, api_secret)
 
@@ -50,10 +50,14 @@ def get_stock_data():
         'low': 'adjusted_low'
     }, inplace=True)
 
-    # Combine adjusted and unadjusted dataframes
-    combined_df = pd.concat([unadjusted_bars_df, adjusted_bars_df[['adjusted_open', 'adjusted_close', 'adjusted_high', 'adjusted_low']]], axis=1)
+    
+    unadjusted_bars_df['timestamp'] = [pd.Timestamp(t[1], unit='s') for t in unadjusted_bars_df.index]
 
-    combined_json = combined_df.reset_index(drop=True).to_json(orient='records')
+    unadjusted_bars_df['timestamp'] = pd.to_datetime(unadjusted_bars_df['timestamp'], unit='ms')
+
+        
+    combined_df = pd.concat([unadjusted_bars_df, adjusted_bars_df[['adjusted_open', 'adjusted_close', 'adjusted_high', 'adjusted_low']]], axis=0) 
+    combined_json = combined_df.reset_index(drop=True).to_json(orient='records') 
 
     return jsonify(combined_json)
 
